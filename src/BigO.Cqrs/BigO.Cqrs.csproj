@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<GenerateDocumentationFile>False</GenerateDocumentationFile>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Title>BigO CQRS Library</Title>
+		<Product>BigO Library</Product>
+		<Description>BigO.Cqrs contains base utilities and extensions dealing with CQRS.</Description>
+		<Copyright>Copyright © Omar Besiso 2022</Copyright>
+		<PackageProjectUrl>https://github.com/omarbesiso/BigO.Cqrs</PackageProjectUrl>
+		<PackageIcon>bigo.png</PackageIcon>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/omarbesiso/BigO.Cqrs.git</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+		<Authors>Omar Besiso</Authors>
+		<Version>1.0.0</Version>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="BigO.Core" Version="1.2.1" />
+		<PackageReference Include="BigO.DependencyInjection" Version="1.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Resource Include="Resources\bigo.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</Resource>
+	</ItemGroup>
+
+</Project>
