@@ -45,40 +45,6 @@ public static class CqrsServiceCollectionExtensions
     }
 
     /// <summary>
-    ///     Registers an asynchronous command handler for a given command type, with the specified service lifetime.
-    /// </summary>
-    /// <typeparam name="TCommand">The type of command being handled.</typeparam>
-    /// <typeparam name="TCommandHandler">The type of the command handler being registered.</typeparam>
-    /// <param name="serviceCollection">The <see cref="IServiceCollection" /> to add the service to.</param>
-    /// <param name="serviceLifetime">
-    ///     The <see cref="ServiceLifetime" /> of the command handler service.
-    ///     If not specified, the default value is <see cref="ServiceLifetime.Transient" />.
-    /// </param>
-    /// <returns>The <paramref name="serviceCollection" /> with the command handler service added.</returns>
-    /// <remarks>
-    ///     This method is an extension method for <see cref="IServiceCollection" /> that adds an asynchronous
-    ///     command handler service to the collection. The command handler service is registered with the
-    ///     specified lifetime, which determines the lifetime of the service instance. The service instance
-    ///     will be created when it is first requested, and will be disposed of according to the specified
-    ///     lifetime.
-    /// </remarks>
-    public static IServiceCollection RegisterAsyncCommandHandler<TCommand, TCommandHandler>(
-        this IServiceCollection serviceCollection, ServiceLifetime serviceLifetime = ServiceLifetime.Transient)
-        where TCommand : class
-        where TCommandHandler : class, IAsyncCommandHandler<TCommand>
-    {
-        return serviceLifetime switch
-        {
-            ServiceLifetime.Singleton =>
-                serviceCollection.AddSingleton<IAsyncCommandHandler<TCommand>, TCommandHandler>(),
-            ServiceLifetime.Scoped => serviceCollection.AddScoped<IAsyncCommandHandler<TCommand>, TCommandHandler>(),
-            ServiceLifetime.Transient =>
-                serviceCollection.AddTransient<IAsyncCommandHandler<TCommand>, TCommandHandler>(),
-            _ => serviceCollection.AddTransient<IAsyncCommandHandler<TCommand>, TCommandHandler>()
-        };
-    }
-
-    /// <summary>
     ///     Registers the default command bus service, with the specified service lifetime.
     /// </summary>
     /// <param name="serviceCollection">The <see cref="IServiceCollection" /> to add the service to.</param>
@@ -140,40 +106,6 @@ public static class CqrsServiceCollectionExtensions
     }
 
     /// <summary>
-    ///     Registers an asynchronous query handler for a given query type, with the specified service lifetime.
-    /// </summary>
-    /// <typeparam name="TQuery">The type of query being handled.</typeparam>
-    /// <typeparam name="TResult">The type of result returned by the query handler.</typeparam>
-    /// <typeparam name="TQueryHandler">The type of the query handler being registered.</typeparam>
-    /// <param name="serviceCollection">The <see cref="IServiceCollection" /> to add the service to.</param>
-    /// <param name="serviceLifetime">
-    ///     The <see cref="ServiceLifetime" /> of the query handler service.
-    ///     If not specified, the default value is <see cref="ServiceLifetime.Transient" />.
-    /// </param>
-    /// <returns>The <paramref name="serviceCollection" /> with the query handler service added.</returns>
-    /// <remarks>
-    ///     This method is an extension method for <see cref="IServiceCollection" /> that adds an asynchronous
-    ///     query handler service to the collection. The query handler service is registered with the specified
-    ///     lifetime, which determines the lifetime of the service instance. The service instance will be
-    ///     created when it is first requested, and will be disposed of according to the specified lifetime.
-    /// </remarks>
-    public static IServiceCollection RegisterAsyncQueryHandler<TQuery, TResult, TQueryHandler>(
-        this IServiceCollection serviceCollection, ServiceLifetime serviceLifetime = ServiceLifetime.Transient)
-        where TQuery : class
-        where TQueryHandler : class, IAsyncQueryHandler<TQuery, TResult>
-    {
-        return serviceLifetime switch
-        {
-            ServiceLifetime.Singleton => serviceCollection
-                .AddSingleton<IAsyncQueryHandler<TQuery, TResult>, TQueryHandler>(),
-            ServiceLifetime.Scoped => serviceCollection.AddScoped<IAsyncQueryHandler<TQuery, TResult>, TQueryHandler>(),
-            ServiceLifetime.Transient => serviceCollection
-                .AddTransient<IAsyncQueryHandler<TQuery, TResult>, TQueryHandler>(),
-            _ => serviceCollection.AddTransient<IAsyncQueryHandler<TQuery, TResult>, TQueryHandler>()
-        };
-    }
-
-    /// <summary>
     ///     Registers the default query processor service, with the specified service lifetime.
     /// </summary>
     /// <param name="serviceCollection">The <see cref="IServiceCollection" /> to add the service to.</param>
@@ -227,32 +159,6 @@ public static class CqrsServiceCollectionExtensions
     }
 
     /// <summary>
-    ///     Registers all asynchronous command handlers within a given module, with a specified service lifetime.
-    /// </summary>
-    /// <typeparam name="TModule">The type of the module containing the asynchronous command handlers to be registered.</typeparam>
-    /// <param name="serviceCollection">The <see cref="IServiceCollection" /> to register the command handlers to.</param>
-    /// <param name="serviceLifetime">
-    ///     The <see cref="ServiceLifetime" /> of the command handler services to be registered.
-    ///     The default value is <see cref="ServiceLifetime.Transient" />.
-    /// </param>
-    /// <returns>The <paramref name="serviceCollection" /> with the command handler services registered.</returns>
-    /// <remarks>
-    ///     This method is an extension method for <see cref="IServiceCollection" /> that registers all
-    ///     asynchronous command handler services within a given module. The command handlers must implement
-    ///     <see cref="IAsyncCommandHandler{TCommand}" />, where TCommand is the command type being handled.
-    ///     The service lifetime of the command handler services is specified by the <paramref name="serviceLifetime" />
-    ///     parameter.
-    /// </remarks>
-    public static IServiceCollection RegisterModuleAsyncCommandHandlers<TModule>(
-        this IServiceCollection serviceCollection,
-        ServiceLifetime serviceLifetime = ServiceLifetime.Transient) where TModule : IModule
-    {
-        var type = typeof(IAsyncCommandHandler<>);
-        RegisterInternal<TModule>(serviceCollection, serviceLifetime, type);
-        return serviceCollection;
-    }
-
-    /// <summary>
     ///     Registers all query handlers within a given module, with a specified service lifetime.
     /// </summary>
     /// <typeparam name="TModule">The type of the module containing the query handlers to be registered.</typeparam>
@@ -273,32 +179,6 @@ public static class CqrsServiceCollectionExtensions
         ServiceLifetime serviceLifetime = ServiceLifetime.Transient) where TModule : IModule
     {
         var type = typeof(IQueryHandler<,>);
-        RegisterInternal<TModule>(serviceCollection, serviceLifetime, type);
-        return serviceCollection;
-    }
-
-    /// <summary>
-    ///     Registers all asynchronous query handlers within a given module, with a specified service lifetime.
-    /// </summary>
-    /// <typeparam name="TModule">The type of the module containing the async query handlers to be registered.</typeparam>
-    /// <param name="serviceCollection">The <see cref="IServiceCollection" /> to register the async query handlers to.</param>
-    /// <param name="serviceLifetime">
-    ///     The <see cref="ServiceLifetime" /> of the async query handler services to be registered.
-    ///     The default value is <see cref="ServiceLifetime.Transient" />.
-    /// </param>
-    /// <returns>The <paramref name="serviceCollection" /> with the async query handler services registered.</returns>
-    /// <remarks>
-    ///     This method is an extension method for <see cref="IServiceCollection" /> that registers all query handler services
-    ///     within a given module. The query handlers must implement <see cref="IAsyncQueryHandler{TQuery, TResult}" />, where
-    ///     TQuery
-    ///     is the query type being handled and TResult is the result type of the query. The service lifetime of the query
-    ///     handler services is specified by the <paramref name="serviceLifetime" /> parameter.
-    /// </remarks>
-    public static IServiceCollection RegisterModuleAsyncQueryHandlers<TModule>(
-        this IServiceCollection serviceCollection,
-        ServiceLifetime serviceLifetime = ServiceLifetime.Transient) where TModule : IModule
-    {
-        var type = typeof(IAsyncQueryHandler<,>);
         RegisterInternal<TModule>(serviceCollection, serviceLifetime, type);
         return serviceCollection;
     }

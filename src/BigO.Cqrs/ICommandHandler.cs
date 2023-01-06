@@ -26,5 +26,5 @@ public interface ICommandHandler<in TCommand> where TCommand : class
     ///     Handles the specified command.
     /// </summary>
     /// <param name="command">The command to be handled.</param>
-    void Handle(TCommand command);
+    Task Handle(TCommand command);
 }

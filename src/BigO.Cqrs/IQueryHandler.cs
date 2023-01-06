@@ -21,7 +21,7 @@ namespace BigO.Cqrs;
 ///     design) that read state data in the domain.
 /// </remarks>
 [PublicAPI]
-public interface IQueryHandler<in TQuery, out TResult> where TQuery : class
+public interface IQueryHandler<in TQuery, TResult> where TQuery : class
 {
     /// <summary>
     ///     Handles the query and returns back the relevant response.
@@ -30,5 +30,5 @@ public interface IQueryHandler<in TQuery, out TResult> where TQuery : class
     /// <typeparam name="TResult">The type of the query response.</typeparam>
     /// <param name="query">The query to be processed.</param>
     /// <returns>The relevant query response.</returns>
-    TResult Read(TQuery query);
+    Task<TResult> Read(TQuery query);
 }

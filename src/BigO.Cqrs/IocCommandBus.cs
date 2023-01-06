@@ -15,17 +15,10 @@ internal class IocCommandBus : ICommandBus
         _serviceProvider = serviceProvider;
     }
 
-    public void Send<TCommand>(TCommand command) where TCommand : class
+    public async Task Send<TCommand>(TCommand command) where TCommand : class
     {
         Guard.NotNull(command);
         var commandHandler = _serviceProvider.GetRequiredService<ICommandHandler<TCommand>>();
-        commandHandler.Handle(command);
-    }
-
-    public async Task SendAsync<TCommand>(TCommand command) where TCommand : class
-    {
-        Guard.NotNull(command);
-        var commandHandler = _serviceProvider.GetRequiredService<IAsyncCommandHandler<TCommand>>();
-        await commandHandler.HandleAsync(command);
+        await commandHandler.Handle(command);
     }
 }

@@ -15,17 +15,10 @@ internal class IocQueryProcessor : IQueryProcessor
         _serviceProvider = serviceProvider;
     }
 
-    public TResult ProcessQuery<TQuery, TResult>(TQuery query) where TQuery : class
+    public async Task<TResult> ProcessQuery<TQuery, TResult>(TQuery query) where TQuery : class
     {
         Guard.NotNull(query, nameof(query));
         var queryHandler = _serviceProvider.GetRequiredService<IQueryHandler<TQuery, TResult>>();
-        return queryHandler.Read(query);
-    }
-
-    public async Task<TResult> ProcessAsyncQuery<TQuery, TResult>(TQuery query) where TQuery : class
-    {
-        Guard.NotNull(query, nameof(query));
-        var queryHandler = _serviceProvider.GetRequiredService<IAsyncQueryHandler<TQuery, TResult>>();
-        return await queryHandler.ReadAsync(query);
+        return await queryHandler.Read(query);
     }
 }
