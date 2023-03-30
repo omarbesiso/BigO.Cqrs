@@ -17,12 +17,12 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<Authors>Omar Besiso</Authors>
-		<Version>1.1.0</Version>
+		<Version>1.1.5</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="BigO.Core" Version="1.2.1" />
-		<PackageReference Include="BigO.DependencyInjection" Version="1.0.0" />
+		<PackageReference Include="BigO.Core" Version="1.4.0" />
+		<PackageReference Include="BigO.DependencyInjection" Version="1.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>
