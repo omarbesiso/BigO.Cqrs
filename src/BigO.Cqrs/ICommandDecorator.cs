@@ -1,4 +1,8 @@
-﻿namespace BigO.Cqrs;
+﻿using JetBrains.Annotations;
+
+// ReSharper disable RedundantTypeDeclarationBody
+
+namespace BigO.Cqrs;
 
 /// <summary>
 ///     Defines a decorator for command handlers. Each decorator provides the ability to add additional functionality to
@@ -6,6 +10,7 @@
 ///     S.O.L.I.D design patterns.
 /// </summary>
 /// <typeparam name="TCommand">The type of the command.</typeparam>
+[PublicAPI]
 public interface ICommandDecorator<in TCommand> : ICommandHandler<TCommand>
     where TCommand : class
 {

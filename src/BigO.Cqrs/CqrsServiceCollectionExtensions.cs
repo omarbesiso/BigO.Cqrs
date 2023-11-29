@@ -154,7 +154,8 @@ public static class CqrsServiceCollectionExtensions
         ServiceLifetime serviceLifetime = ServiceLifetime.Transient) where TModule : IModule
     {
         var type = typeof(ICommandHandler<>);
-        RegisterInternal<TModule>(serviceCollection, serviceLifetime, type);
+        RegisterInternal<TModule>(serviceCollection, serviceLifetime, type,
+            new List<Type> { typeof(ICommandDecorator<>) });
         return serviceCollection;
     }
 
@@ -179,34 +180,69 @@ public static class CqrsServiceCollectionExtensions
         ServiceLifetime serviceLifetime = ServiceLifetime.Transient) where TModule : IModule
     {
         var type = typeof(IQueryHandler<,>);
-        RegisterInternal<TModule>(serviceCollection, serviceLifetime, type);
+        RegisterInternal<TModule>(serviceCollection, serviceLifetime, type,
+            new List<Type> { typeof(IQueryDecorator<,>) });
+        return serviceCollection;
+    }
+
+    public static IServiceCollection DecorateAllCommandHandlers(IServiceCollection serviceCollection,
+        Type commandDecoratorType)
+    {
+        if (!commandDecoratorType.IsAssignableTo(typeof(ICommandDecorator<>)))
+        {
+            throw new ArgumentException("Decorator must implement ICommandDecorator<TCommand>.",
+                commandDecoratorType.FullName);
+        }
+
+        serviceCollection.Decorate(typeof(ICommandHandler<>), commandDecoratorType);
+        return serviceCollection;
+    }
+
+    public static IServiceCollection DecorateAllQueryHandlers(IServiceCollection serviceCollection,
+        Type queryDecoratorType)
+    {
+        if (!queryDecoratorType.IsAssignableTo(typeof(IQueryDecorator<,>)))
+        {
+            throw new ArgumentException("Decorator must implement IQueryDecorator<TQuery, TResult>.",
+                queryDecoratorType.FullName);
+        }
+
+        serviceCollection.Decorate(typeof(IQueryHandler<,>), queryDecoratorType);
         return serviceCollection;
     }
 
     private static void RegisterInternal<TModule>(IServiceCollection serviceCollection, ServiceLifetime serviceLifetime,
-        Type type)
+        Type type, IEnumerable<Type>? excludedTypes = null)
         where TModule : IModule
     {
+        var excludedTypesList = excludedTypes != null ? excludedTypes.ToList() : new List<Type>();
+
         switch (serviceLifetime)
         {
             case ServiceLifetime.Scoped:
                 serviceCollection.Scan(scan =>
                     scan.FromAssemblyOf<TModule>()
-                        .AddClasses(classes => classes.AssignableTo(type))
+                        .AddClasses(classes =>
+                            classes.AssignableTo(type)
+                                .Where(t => !excludedTypesList.Any(t.IsBasedOn) && t.IsBasedOn(type)))
                         .AsImplementedInterfaces()
                         .WithScopedLifetime());
                 break;
             case ServiceLifetime.Transient:
                 serviceCollection.Scan(scan =>
                     scan.FromAssemblyOf<TModule>()
-                        .AddClasses(classes => classes.AssignableTo(type))
+                        .AddClasses(classes =>
+                            classes.AssignableTo(type)
+                                .Where(t => !excludedTypesList.Any(t.IsBasedOn) && t.IsBasedOn(type)))
                         .AsImplementedInterfaces()
                         .WithTransientLifetime());
                 break;
             case ServiceLifetime.Singleton:
                 serviceCollection.Scan(scan =>
                     scan.FromAssemblyOf<TModule>()
-                        .AddClasses(classes => classes.AssignableTo(type))
+                        .AddClasses(classes =>
+                            classes.AssignableTo(type)
+                                .Where(t => !excludedTypesList.Any(t.IsBasedOn) && t.IsBasedOn(type)))
                         .AsImplementedInterfaces()
                         .WithSingletonLifetime());
                 break;
