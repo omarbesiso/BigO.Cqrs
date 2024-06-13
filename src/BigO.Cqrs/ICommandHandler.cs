@@ -23,7 +23,7 @@ namespace BigO.Cqrs;
 public interface ICommandHandler<in TCommand> where TCommand : class
 {
     /// <summary>
-    ///     Handles the specified command.
+    ///     Routes the specified command to the relevant command handler.
     /// </summary>
     /// <param name="command">The command to be handled.</param>
     Task Handle(TCommand command);

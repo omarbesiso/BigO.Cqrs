@@ -8,6 +8,9 @@ namespace BigO.Cqrs;
 /// </summary>
 internal class IocCommandBus(IServiceProvider serviceProvider) : ICommandBus
 {
+    /// <summary>
+    ///     Routes the specified command to the relevant command handler.
+    /// </summary>
     public async Task Send<TCommand>(TCommand command) where TCommand : class
     {
         Guard.NotNull(command);
