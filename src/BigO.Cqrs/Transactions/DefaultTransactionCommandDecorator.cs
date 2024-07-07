@@ -7,4 +7,4 @@
 /// <typeparam name="TCommand">The type of the command.</typeparam>
 public class DefaultTransactionCommandDecorator<TCommand>(ICommandHandler<TCommand> decorated)
     : TransactionCommandDecoratorBase<TCommand>(decorated)
-    where TCommand : class;
+    where TCommand : ICommand;

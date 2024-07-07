@@ -15,5 +15,5 @@ public interface IQueryProcessor
     /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="query">The query to be routed.</param>
     /// <returns>The relevant query response.</returns>
-    Task<TResult> ProcessQuery<TQuery, TResult>(TQuery query) where TQuery : class;
+    Task<TResult> ProcessQuery<TQuery, TResult>(TQuery query) where TQuery : IQuery;
 }

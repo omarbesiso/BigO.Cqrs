@@ -17,16 +17,22 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<Authors>Omar Besiso</Authors>
-		<Version>2.2.0.0</Version>
+		<Version>2.3.1.0</Version>
+		<PackageReadmeFile>Readme.md</PackageReadmeFile>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="BigO.Core" Version="2.2.0" />
-		<PackageReference Include="BigO.DependencyInjection" Version="2.2.0" />
+		<PackageReference Include="BigO.Core" Version="2.3.1" />
+		<PackageReference Include="BigO.DependencyInjection" Version="2.3.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<Resource Include="Docs\Readme.md">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</Resource>
 		<Resource Include="Resources\bigo.png">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>

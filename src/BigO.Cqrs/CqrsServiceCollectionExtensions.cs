@@ -30,7 +30,7 @@ public static class CqrsServiceCollectionExtensions
     /// </remarks>
     public static IServiceCollection RegisterCommandHandler<TCommand, TCommandHandler>(
         this IServiceCollection serviceCollection, ServiceLifetime serviceLifetime = ServiceLifetime.Transient)
-        where TCommand : class
+        where TCommand : ICommand
         where TCommandHandler : class, ICommandHandler<TCommand>
     {
         return serviceLifetime switch
@@ -91,7 +91,7 @@ public static class CqrsServiceCollectionExtensions
     /// </remarks>
     public static IServiceCollection RegisterQueryHandler<TQuery, TResult, TQueryHandler>(
         this IServiceCollection serviceCollection, ServiceLifetime serviceLifetime = ServiceLifetime.Transient)
-        where TQuery : class
+        where TQuery : IQuery
         where TQueryHandler : class, IQueryHandler<TQuery, TResult>
     {
         return serviceLifetime switch

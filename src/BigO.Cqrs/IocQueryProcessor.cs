@@ -15,7 +15,7 @@ internal class IocQueryProcessor(IServiceProvider serviceProvider) : IQueryProce
     /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="query">The query to be routed.</param>
     /// <returns>The relevant query response.</returns>
-    public async Task<TResult> ProcessQuery<TQuery, TResult>(TQuery query) where TQuery : class
+    public async Task<TResult> ProcessQuery<TQuery, TResult>(TQuery query) where TQuery : IQuery
     {
         Guard.NotNull(query, nameof(query));
         var queryHandler = serviceProvider.GetRequiredService<IQueryHandler<TQuery, TResult>>();

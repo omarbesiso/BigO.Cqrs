@@ -17,7 +17,7 @@ public static class TransactionExtensions
     /// <returns>The updated service collection.</returns>
     public static IServiceCollection DecorateCommandHandlerWithTransactions<TCommand>(
         this IServiceCollection serviceCollection)
-        where TCommand : class
+        where TCommand : ICommand
     {
         return serviceCollection.DecorateCommandHandler<TCommand, DefaultTransactionCommandDecorator<TCommand>>();
     }

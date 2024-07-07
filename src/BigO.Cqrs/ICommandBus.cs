@@ -13,5 +13,5 @@ public interface ICommandBus
     /// </summary>
     /// <typeparam name="TCommand">The type of the command.</typeparam>
     /// <param name="command">The command to be routed.</param>
-    Task Send<TCommand>(TCommand command) where TCommand : class;
+    Task Send<TCommand>(TCommand command) where TCommand : ICommand;
 }

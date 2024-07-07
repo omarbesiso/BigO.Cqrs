@@ -1,4 +1,4 @@
-
+﻿
 # BigO.Cqrs
 
 [![NuGet version](https://badge.fury.io/nu/BigO.Cqrs.svg)](https://badge.fury.io/nu/BigO.Cqrs)

@@ -8,6 +8,4 @@
 /// <typeparam name="TQuery">The type of the query. Must be a reference type.</typeparam>
 /// <typeparam name="TResult">The type of the response.</typeparam>
 public interface IQueryDecorator<in TQuery, TResult> : IQueryHandler<TQuery, TResult>
-    where TQuery : class
-{
-}
+    where TQuery : IQuery;

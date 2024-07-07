@@ -12,7 +12,7 @@ namespace BigO.Cqrs.Logging;
 /// <typeparam name="TCommand">The type of the command.</typeparam>
 /// <seealso cref="ICommandDecorator{TCommand}" />
 public sealed class LoggingCommandDecorator<TCommand> : ICommandDecorator<TCommand>
-    where TCommand : class
+    where TCommand : ICommand
 {
     private readonly ICommandHandler<TCommand> _decorated;
     private readonly ILogger _logger;

@@ -17,14 +17,9 @@ public static class DecorationServiceCollectionExtensions
     /// <typeparam name="TDecorator">The type of the decorator being added to the command handler.</typeparam>
     /// <param name="serviceCollection">The <see cref="IServiceCollection" /> to add the service decorator to.</param>
     /// <returns>The <paramref name="serviceCollection" /> with the command handler decorator added.</returns>
-    /// <remarks>
-    ///     This method is an extension method for <see cref="IServiceCollection" /> that adds a decorator
-    ///     to a command handler service. The decorator wraps the command handler service, and can be used
-    ///     to add additional behavior or functionality to the command handler.
-    /// </remarks>
     public static IServiceCollection DecorateCommandHandler<TCommand, TDecorator>(
         this IServiceCollection serviceCollection)
-        where TCommand : class
+        where TCommand : ICommand
         where TDecorator : class, ICommandDecorator<TCommand>
     {
         return serviceCollection.Decorate<ICommandHandler<TCommand>, TDecorator>();
@@ -38,14 +33,9 @@ public static class DecorationServiceCollectionExtensions
     /// <typeparam name="TDecorator">The type of the decorator being added to the query handler.</typeparam>
     /// <param name="serviceCollection">The <see cref="IServiceCollection" /> to add the service decorator to.</param>
     /// <returns>The <paramref name="serviceCollection" /> with the query handler decorator added.</returns>
-    /// <remarks>
-    ///     This method is an extension method for <see cref="IServiceCollection" /> that adds a decorator
-    ///     to a query handler service. The decorator wraps the query handler service, and can be used to
-    ///     add additional behavior or functionality to the query handler.
-    /// </remarks>
     public static IServiceCollection DecorateQueryHandler<TQuery, TResult, TDecorator>(
         this IServiceCollection serviceCollection)
-        where TQuery : class
+        where TQuery : IQuery
         where TDecorator : class, IQueryDecorator<TQuery, TResult>
     {
         return serviceCollection.Decorate<IQueryHandler<TQuery, TResult>, TDecorator>();

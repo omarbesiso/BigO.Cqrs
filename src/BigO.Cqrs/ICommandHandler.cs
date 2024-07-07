@@ -20,7 +20,7 @@ namespace BigO.Cqrs;
 ///     design) that cause a change in the domain.
 /// </remarks>
 [PublicAPI]
-public interface ICommandHandler<in TCommand> where TCommand : class
+public interface ICommandHandler<in TCommand> where TCommand : ICommand
 {
     /// <summary>
     ///     Routes the specified command to the relevant command handler.

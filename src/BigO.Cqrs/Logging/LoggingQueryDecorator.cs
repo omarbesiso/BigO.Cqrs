@@ -13,7 +13,7 @@ namespace BigO.Cqrs.Logging;
 /// <typeparam name="TResult">The type of the result.</typeparam>
 /// <seealso cref="IQueryDecorator{TQuery,TResult}" />
 public sealed class LoggingQueryDecorator<TQuery, TResult> : IQueryDecorator<TQuery, TResult>
-    where TQuery : class
+    where TQuery : IQuery
 {
     private readonly IQueryHandler<TQuery, TResult> _decorated;
     private readonly ILogger<LoggingQueryDecorator<TQuery, TResult>> _logger;

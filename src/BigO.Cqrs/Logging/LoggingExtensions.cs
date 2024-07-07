@@ -14,7 +14,7 @@ public static class LoggingExtensions
     /// <returns>A reference to this service collection instance after the operation has completed.</returns>
     public static IServiceCollection DecorateCommandHandlerWithLogging<TCommand>(
         this IServiceCollection serviceCollection)
-        where TCommand : class
+        where TCommand : ICommand
     {
         return serviceCollection.DecorateCommandHandler<TCommand, LoggingCommandDecorator<TCommand>>();
     }
@@ -28,7 +28,7 @@ public static class LoggingExtensions
     /// <returns>A reference to this service collection instance after the operation has completed.</returns>
     public static IServiceCollection DecorateQueryHandlerWithLogging<TQuery, TResult>(
         this IServiceCollection serviceCollection)
-        where TQuery : class
+        where TQuery : IQuery
     {
         return serviceCollection.DecorateQueryHandler<TQuery, TResult, LoggingQueryDecorator<TQuery, TResult>>();
     }

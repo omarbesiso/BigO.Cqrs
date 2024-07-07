@@ -11,7 +11,4 @@ namespace BigO.Cqrs;
 /// </summary>
 /// <typeparam name="TCommand">The type of the command.</typeparam>
 [PublicAPI]
-public interface ICommandDecorator<in TCommand> : ICommandHandler<TCommand>
-    where TCommand : class
-{
-}
+public interface ICommandDecorator<in TCommand> : ICommandHandler<TCommand> where TCommand : ICommand;

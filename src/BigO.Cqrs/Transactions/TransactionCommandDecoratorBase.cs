@@ -9,7 +9,7 @@ namespace BigO.Cqrs.Transactions;
 /// <typeparam name="TCommand">The type of the command.</typeparam>
 public abstract class TransactionCommandDecoratorBase<TCommand>(ICommandHandler<TCommand> decorated) :
     ICommandDecorator<TCommand>
-    where TCommand : class
+    where TCommand : ICommand
 {
     /// <summary>
     ///     The decorated command handler.
