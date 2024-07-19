@@ -1,8 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 
-// ReSharper disable UnusedMember.Global
-
 namespace BigO.Cqrs.Logging;
 
 /// <summary>
@@ -37,26 +35,43 @@ public sealed class LoggingQueryDecorator<TQuery, TResult> : IQueryDecorator<TQu
     /// <returns>TResult.</returns>
     public async Task<TResult> Read(TQuery query)
     {
-        TResult result;
         var queryName = query.GetType().Name;
-
         _logger.LogInformation("Start reading query '{queryName}'", queryName);
 
-        var startTime = Stopwatch.GetTimestamp();
-
+#if NET6_0
+        var stopwatch = Stopwatch.StartNew();
         try
         {
-            result = await _decorated.Read(query);
+            var result = await _decorated.Read(query);
+            return result;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Exception throw while reading query '{queryName}'", queryName);
+            _logger.LogError(ex, "Exception thrown while reading query '{queryName}'", queryName);
             throw;
         }
-
-        var elapsedTime = Stopwatch.GetElapsedTime(startTime);
-        _logger.LogInformation("Executed query '{queryName}' in {elapsedTime}.", queryName, elapsedTime);
-
-        return result;
+        finally
+        {
+            stopwatch.Stop();
+            _logger.LogInformation("Executed query '{queryName}' in {elapsedTime}.", queryName, stopwatch.Elapsed);
+        }
+#else
+        var startTime = Stopwatch.GetTimestamp();
+        try
+        {
+            var result = await _decorated.Read(query);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Exception thrown while reading query '{queryName}'", queryName);
+            throw;
+        }
+        finally
+        {
+            var elapsedTime = Stopwatch.GetElapsedTime(startTime);
+            _logger.LogInformation("Executed query '{queryName}' in {elapsedTime}.", queryName, elapsedTime);
+        }
+#endif
     }
 }

@@ -1,9 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<LangVersion>latest</LangVersion>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Title>BigO CQRS Library</Title>
@@ -17,13 +18,13 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<Authors>Omar Besiso</Authors>
-		<Version>2.3.1.0</Version>
+		<Version>2.4</Version>
 		<PackageReadmeFile>Readme.md</PackageReadmeFile>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="BigO.Core" Version="2.3.1" />
-		<PackageReference Include="BigO.DependencyInjection" Version="2.3.1" />
+		<PackageReference Include="BigO.Core" Version="2.4" />
+		<PackageReference Include="BigO.DependencyInjection" Version="2.4" />
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
 	</ItemGroup>
 

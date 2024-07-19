@@ -1,8 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 
-// ReSharper disable UnusedMember.Global
-
 namespace BigO.Cqrs.Logging;
 
 /// <summary>
@@ -36,22 +34,40 @@ public sealed class LoggingCommandDecorator<TCommand> : ICommandDecorator<TComma
     public async Task Handle(TCommand command)
     {
         var commandName = command.GetType().Name;
-
         _logger.LogInformation("Start executing command '{commandName}'", commandName);
 
-        var startTime = Stopwatch.GetTimestamp();
-
+#if NET6_0
+        var stopwatch = Stopwatch.StartNew();
         try
         {
             await _decorated.Handle(command);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Exception throw while executing command '{commandName}'", commandName);
+            _logger.LogError(ex, "Exception thrown while executing command '{commandName}'", commandName);
             throw;
         }
-
-        var elapsedTime = Stopwatch.GetElapsedTime(startTime);
-        _logger.LogInformation("Executed command '{commandName}' in {elapsedTime}.", commandName, elapsedTime);
+        finally
+        {
+            stopwatch.Stop();
+            _logger.LogInformation("Executed command '{commandName}' in {elapsedTime}.", commandName, stopwatch.Elapsed);
+        }
+#else
+        var startTime = Stopwatch.GetTimestamp();
+        try
+        {
+            await _decorated.Handle(command);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Exception thrown while executing command '{commandName}'", commandName);
+            throw;
+        }
+        finally
+        {
+            var elapsedTime = Stopwatch.GetElapsedTime(startTime);
+            _logger.LogInformation("Executed command '{commandName}' in {elapsedTime}.", commandName, elapsedTime);
+        }
+#endif
     }
 }
