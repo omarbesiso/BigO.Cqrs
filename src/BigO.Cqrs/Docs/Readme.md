@@ -12,6 +12,18 @@ BigO.Cqrs provides a comprehensive framework for implementing the Command Query 
 - **Buses\Mediators**: Use pub/sub utilities to dispatch commands and queries, promoting decoupling.
 - **Pipeline Behaviors**: Add custom behaviors to the processing pipeline.
 
+## Notes
+
+- **Handlers should be idempotent where possible; transactions are not a substitute.**
+
+- **Prefer database transactions for single-DB work; use TransactionScope only for multi-resource orchestration.**
+
+- **Keep transaction scope small (handler only), and avoid long I/O inside a transaction.**
+
+- **Log failures at Error, start/stop at Debug to avoid log volume.**
+
+- **Always pass CancellationToken through.**
+
 ## Installation
 
 Install via NuGet Package Manager Console:
