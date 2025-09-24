@@ -36,23 +36,6 @@ public sealed class LoggingCommandDecorator<TCommand> : ICommandDecorator<TComma
         var commandName = command.GetType().Name;
         _logger.LogInformation("Start executing command '{commandName}'", commandName);
 
-#if NET6_0
-        var stopwatch = Stopwatch.StartNew();
-        try
-        {
-            await _decorated.Handle(command);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Exception thrown while executing command '{commandName}'", commandName);
-            throw;
-        }
-        finally
-        {
-            stopwatch.Stop();
-            _logger.LogInformation("Executed command '{commandName}' in {elapsedTime}.", commandName, stopwatch.Elapsed);
-        }
-#else
         var startTime = Stopwatch.GetTimestamp();
         try
         {
@@ -68,6 +51,5 @@ public sealed class LoggingCommandDecorator<TCommand> : ICommandDecorator<TComma
             var elapsedTime = Stopwatch.GetElapsedTime(startTime);
             _logger.LogInformation("Executed command '{commandName}' in {elapsedTime}.", commandName, elapsedTime);
         }
-#endif
     }
 }

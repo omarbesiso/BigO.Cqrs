@@ -1,12 +1,10 @@
-﻿using JetBrains.Annotations;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace BigO.Cqrs.Transactions;
 
 /// <summary>
 ///     Provides extension methods for decorating command handlers with transaction support.
 /// </summary>
-[PublicAPI]
 public static class TransactionExtensions
 {
     /// <summary>
@@ -17,8 +15,6 @@ public static class TransactionExtensions
     /// <returns>The updated service collection.</returns>
     public static IServiceCollection DecorateCommandHandlerWithTransactions<TCommand>(
         this IServiceCollection serviceCollection)
-        where TCommand : ICommand
-    {
-        return serviceCollection.DecorateCommandHandler<TCommand, DefaultTransactionCommandDecorator<TCommand>>();
-    }
+        where TCommand : ICommand =>
+        serviceCollection.DecorateCommandHandler<TCommand, DefaultTransactionCommandDecorator<TCommand>>();
 }

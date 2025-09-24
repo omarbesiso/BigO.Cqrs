@@ -11,12 +11,10 @@ internal static class ReflectionExtensions
     /// <param name="type">The type to check.</param>
     /// <param name="otherType">The type to compare against.</param>
     /// <returns><c>true</c> if the specified type is based on the other type; otherwise, <c>false</c>.</returns>
-    public static bool IsBasedOn(this Type type, Type otherType)
-    {
-        return otherType.IsGenericTypeDefinition
+    public static bool IsBasedOn(this Type type, Type otherType) =>
+        otherType.IsGenericTypeDefinition
             ? type.IsAssignableToGenericTypeDefinition(otherType)
             : otherType.IsAssignableFrom(type);
-    }
 
     /// <summary>
     ///     Determines whether the specified type is assignable to a generic type definition.
@@ -27,6 +25,7 @@ internal static class ReflectionExtensions
     private static bool IsAssignableToGenericTypeDefinition(this Type type, Type genericType)
     {
         // Check all interfaces implemented by the type
+        // ReSharper disable once LoopCanBeConvertedToQuery
         foreach (var interfaceType in type.GetInterfaces())
         {
             if (!interfaceType.IsGenericType)

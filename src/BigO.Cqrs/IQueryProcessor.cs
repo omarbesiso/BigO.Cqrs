@@ -1,11 +1,8 @@
-﻿using JetBrains.Annotations;
-
-namespace BigO.Cqrs;
+﻿namespace BigO.Cqrs;
 
 /// <summary>
 ///     The contract defines the router of queries to query handlers.
 /// </summary>
-[PublicAPI]
 public interface IQueryProcessor
 {
     /// <summary>

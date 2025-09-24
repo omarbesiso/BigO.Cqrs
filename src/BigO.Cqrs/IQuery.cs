@@ -1,9 +1,6 @@
-﻿using JetBrains.Annotations;
-
-namespace BigO.Cqrs;
+﻿namespace BigO.Cqrs;
 
 /// <summary>
 ///     Marker interface for CQRS queries.
 /// </summary>
-[PublicAPI]
 public interface IQuery;

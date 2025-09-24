@@ -1,6 +1,4 @@
-﻿using JetBrains.Annotations;
-
-namespace BigO.Cqrs;
+﻿namespace BigO.Cqrs;
 
 /// <summary>
 ///     Defines a contract for handling queries as specified in the CQRS pattern.
@@ -20,7 +18,6 @@ namespace BigO.Cqrs;
 ///     3. In CQRS query handlers represent an implementation for Application Services (as defined in domain driven
 ///     design) that read state data in the domain.
 /// </remarks>
-[PublicAPI]
 public interface IQueryHandler<in TQuery, TResult> where TQuery : IQuery
 {
     /// <summary>

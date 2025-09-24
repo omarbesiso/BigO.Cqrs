@@ -1,9 +1,7 @@
-﻿using JetBrains.Annotations;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace BigO.Cqrs.Logging;
 
-[PublicAPI]
 public static class LoggingExtensions
 {
     /// <summary>
@@ -14,10 +12,8 @@ public static class LoggingExtensions
     /// <returns>A reference to this service collection instance after the operation has completed.</returns>
     public static IServiceCollection DecorateCommandHandlerWithLogging<TCommand>(
         this IServiceCollection serviceCollection)
-        where TCommand : ICommand
-    {
-        return serviceCollection.DecorateCommandHandler<TCommand, LoggingCommandDecorator<TCommand>>();
-    }
+        where TCommand : ICommand =>
+        serviceCollection.DecorateCommandHandler<TCommand, LoggingCommandDecorator<TCommand>>();
 
     /// <summary>
     ///     Decorates the query handler with logging.
@@ -28,8 +24,6 @@ public static class LoggingExtensions
     /// <returns>A reference to this service collection instance after the operation has completed.</returns>
     public static IServiceCollection DecorateQueryHandlerWithLogging<TQuery, TResult>(
         this IServiceCollection serviceCollection)
-        where TQuery : IQuery
-    {
-        return serviceCollection.DecorateQueryHandler<TQuery, TResult, LoggingQueryDecorator<TQuery, TResult>>();
-    }
+        where TQuery : IQuery =>
+        serviceCollection.DecorateQueryHandler<TQuery, TResult, LoggingQueryDecorator<TQuery, TResult>>();
 }

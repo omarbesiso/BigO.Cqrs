@@ -38,24 +38,6 @@ public sealed class LoggingQueryDecorator<TQuery, TResult> : IQueryDecorator<TQu
         var queryName = query.GetType().Name;
         _logger.LogInformation("Start reading query '{queryName}'", queryName);
 
-#if NET6_0
-        var stopwatch = Stopwatch.StartNew();
-        try
-        {
-            var result = await _decorated.Read(query);
-            return result;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Exception thrown while reading query '{queryName}'", queryName);
-            throw;
-        }
-        finally
-        {
-            stopwatch.Stop();
-            _logger.LogInformation("Executed query '{queryName}' in {elapsedTime}.", queryName, stopwatch.Elapsed);
-        }
-#else
         var startTime = Stopwatch.GetTimestamp();
         try
         {
@@ -72,6 +54,5 @@ public sealed class LoggingQueryDecorator<TQuery, TResult> : IQueryDecorator<TQu
             var elapsedTime = Stopwatch.GetElapsedTime(startTime);
             _logger.LogInformation("Executed query '{queryName}' in {elapsedTime}.", queryName, elapsedTime);
         }
-#endif
     }
 }

@@ -1,11 +1,8 @@
-﻿using JetBrains.Annotations;
-
-namespace BigO.Cqrs;
+﻿namespace BigO.Cqrs;
 
 /// <summary>
 ///     The contract defines the router of commands to command handlers.
 /// </summary>
-[PublicAPI]
 public interface ICommandBus
 {
     /// <summary>

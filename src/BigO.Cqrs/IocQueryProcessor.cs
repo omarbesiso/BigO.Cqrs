@@ -1,4 +1,4 @@
-﻿using BigO.Core.Validation;
+﻿using BigO.Validation;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BigO.Cqrs;

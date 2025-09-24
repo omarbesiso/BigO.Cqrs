@@ -1,5 +1,4 @@
 ﻿using BigO.DependencyInjection;
-using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BigO.Cqrs;
@@ -8,7 +7,6 @@ namespace BigO.Cqrs;
 ///     Class providing extensions to the <see cref="IServiceCollection" /> to allow for the registration of different
 ///     types of handlers for different message types.
 /// </summary>
-[PublicAPI]
 public static class CqrsServiceCollectionExtensions
 {
     /// <summary>

@@ -1,5 +1,4 @@
-﻿using JetBrains.Annotations;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace BigO.Cqrs;
 
@@ -7,7 +6,6 @@ namespace BigO.Cqrs;
 ///     Class providing extensions to the <see cref="IServiceCollection" /> to allow for the decoration of different
 ///     types of handlers for different message types.
 /// </summary>
-[PublicAPI]
 public static class DecorationServiceCollectionExtensions
 {
     /// <summary>
@@ -20,10 +18,8 @@ public static class DecorationServiceCollectionExtensions
     public static IServiceCollection DecorateCommandHandler<TCommand, TDecorator>(
         this IServiceCollection serviceCollection)
         where TCommand : ICommand
-        where TDecorator : class, ICommandDecorator<TCommand>
-    {
-        return serviceCollection.Decorate<ICommandHandler<TCommand>, TDecorator>();
-    }
+        where TDecorator : class, ICommandDecorator<TCommand> =>
+        serviceCollection.Decorate<ICommandHandler<TCommand>, TDecorator>();
 
     /// <summary>
     ///     Decorates a query handler for a given query type and result type, with a specified decorator type.
@@ -36,8 +32,6 @@ public static class DecorationServiceCollectionExtensions
     public static IServiceCollection DecorateQueryHandler<TQuery, TResult, TDecorator>(
         this IServiceCollection serviceCollection)
         where TQuery : IQuery
-        where TDecorator : class, IQueryDecorator<TQuery, TResult>
-    {
-        return serviceCollection.Decorate<IQueryHandler<TQuery, TResult>, TDecorator>();
-    }
+        where TDecorator : class, IQueryDecorator<TQuery, TResult> =>
+        serviceCollection.Decorate<IQueryHandler<TQuery, TResult>, TDecorator>();
 }
