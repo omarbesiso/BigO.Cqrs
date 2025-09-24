@@ -10,5 +10,6 @@ public interface ICommandBus
     /// </summary>
     /// <typeparam name="TCommand">The type of the command.</typeparam>
     /// <param name="command">The command to be routed.</param>
-    Task Send<TCommand>(TCommand command) where TCommand : ICommand;
+    /// <param name="cancellationToken">The cancellation token.</param>
+    Task Send<TCommand>(TCommand command, CancellationToken cancellationToken = default) where TCommand : ICommand;
 }

@@ -8,13 +8,12 @@ namespace BigO.Cqrs;
 /// </summary>
 internal class IocCommandBus(IServiceProvider serviceProvider) : ICommandBus
 {
-    /// <summary>
-    ///     Routes the specified command to the relevant command handler.
-    /// </summary>
-    public async Task Send<TCommand>(TCommand command) where TCommand : ICommand
+    /// <inheritdoc />
+    public async Task Send<TCommand>(TCommand command, CancellationToken cancellationToken = default)
+        where TCommand : ICommand
     {
         Guard.NotNull(command);
         var commandHandler = serviceProvider.GetRequiredService<ICommandHandler<TCommand>>();
-        await commandHandler.Handle(command);
+        await commandHandler.Handle(command, cancellationToken);
     }
 }

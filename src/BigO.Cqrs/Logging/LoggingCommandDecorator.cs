@@ -13,7 +13,9 @@ public sealed class LoggingCommandDecorator<TCommand> : ICommandDecorator<TComma
     where TCommand : ICommand
 {
     private readonly ICommandHandler<TCommand> _decorated;
-    private readonly ILogger _logger;
+
+    // MODIFIED: Logger field type made more specific
+    private readonly ILogger<LoggingCommandDecorator<TCommand>> _logger;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="LoggingCommandDecorator{TCommand}" /> class.
@@ -23,6 +25,7 @@ public sealed class LoggingCommandDecorator<TCommand> : ICommandDecorator<TComma
     public LoggingCommandDecorator(ICommandHandler<TCommand> decorated,
         ILogger<LoggingCommandDecorator<TCommand>> logger)
     {
+        // Consider adding Guard.Against.Null(decorated); and Guard.Against.Null(logger);
         _decorated = decorated;
         _logger = logger;
     }
@@ -31,25 +34,27 @@ public sealed class LoggingCommandDecorator<TCommand> : ICommandDecorator<TComma
     ///     Handles the specified command while applying decorator logic.
     /// </summary>
     /// <param name="command">The command to be executed.</param>
-    public async Task Handle(TCommand command)
+    /// <param name="cancellationToken">The cancellation token.</param>
+    public async Task Handle(TCommand command, CancellationToken cancellationToken = default)
     {
         var commandName = command.GetType().Name;
-        _logger.LogInformation("Start executing command '{commandName}'", commandName);
+        CqrsLog.StartExecutingCommand(_logger, commandName); // MODIFIED: Using source-generated logger
 
         var startTime = Stopwatch.GetTimestamp();
         try
         {
-            await _decorated.Handle(command);
+            // MODIFIED: Added ConfigureAwait(false)
+            await _decorated.Handle(command, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Exception thrown while executing command '{commandName}'", commandName);
+            CqrsLog.ErrorExecutingCommand(_logger, commandName, ex); // MODIFIED: Using source-generated logger
             throw;
         }
         finally
         {
             var elapsedTime = Stopwatch.GetElapsedTime(startTime);
-            _logger.LogInformation("Executed command '{commandName}' in {elapsedTime}.", commandName, elapsedTime);
+            CqrsLog.ExecutedCommand(_logger, commandName, elapsedTime); // MODIFIED: Using source-generated logger
         }
     }
 }

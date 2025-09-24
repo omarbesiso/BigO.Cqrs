@@ -1,5 +1,12 @@
-﻿using System.Diagnostics;
+﻿// Filename: LoggingQueryDecorator.cs
+
+using System.Diagnostics;
 using Microsoft.Extensions.Logging;
+
+// Required for Exception
+
+// Assuming your CQRS interfaces (IQuery, IQueryHandler, IQueryDecorator) are accessible
+// e.g., using BigO.Cqrs;
 
 namespace BigO.Cqrs.Logging;
 
@@ -24,6 +31,8 @@ public sealed class LoggingQueryDecorator<TQuery, TResult> : IQueryDecorator<TQu
     public LoggingQueryDecorator(IQueryHandler<TQuery, TResult> decorated,
         ILogger<LoggingQueryDecorator<TQuery, TResult>> logger)
     {
+        // Consider adding Guard.Against.Null(decorated); and Guard.Against.Null(logger);
+        // if that's a pattern used elsewhere in your library.
         _decorated = decorated;
         _logger = logger;
     }
@@ -32,27 +41,29 @@ public sealed class LoggingQueryDecorator<TQuery, TResult> : IQueryDecorator<TQu
     ///     Reads the specified query while applying decorator logic.
     /// </summary>
     /// <param name="query">The query.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>TResult.</returns>
-    public async Task<TResult> Read(TQuery query)
+    public async Task<TResult> Read(TQuery query, CancellationToken cancellationToken = default)
     {
         var queryName = query.GetType().Name;
-        _logger.LogInformation("Start reading query '{queryName}'", queryName);
+        CqrsLog.StartReadingQuery(_logger, queryName); // MODIFIED: Using source-generated logger
 
         var startTime = Stopwatch.GetTimestamp();
         try
         {
-            var result = await _decorated.Read(query);
+            // MODIFIED: Added ConfigureAwait(false)
+            var result = await _decorated.Read(query, cancellationToken).ConfigureAwait(false);
             return result;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Exception thrown while reading query '{queryName}'", queryName);
+            CqrsLog.ErrorReadingQuery(_logger, queryName, ex); // MODIFIED: Using source-generated logger
             throw;
         }
         finally
         {
             var elapsedTime = Stopwatch.GetElapsedTime(startTime);
-            _logger.LogInformation("Executed query '{queryName}' in {elapsedTime}.", queryName, elapsedTime);
+            CqrsLog.ExecutedQuery(_logger, queryName, elapsedTime); // MODIFIED: Using source-generated logger
         }
     }
 }

@@ -11,6 +11,8 @@ public interface IQueryProcessor
     /// <typeparam name="TQuery">The type of the query. Must be a reference type.</typeparam>
     /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="query">The query to be routed.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The relevant query response.</returns>
-    Task<TResult> ProcessQuery<TQuery, TResult>(TQuery query) where TQuery : IQuery;
+    Task<TResult> ProcessQuery<TQuery, TResult>(TQuery query, CancellationToken cancellationToken = default)
+        where TQuery : IQuery;
 }

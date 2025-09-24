@@ -23,9 +23,8 @@ public interface IQueryHandler<in TQuery, TResult> where TQuery : IQuery
     /// <summary>
     ///     Handles the query and returns back the relevant response.
     /// </summary>
-    /// <typeparam name="TQuery">The type of the query. Must be a reference type.</typeparam>
-    /// <typeparam name="TResult">The type of the query response.</typeparam>
     /// <param name="query">The query to be processed.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The relevant query response.</returns>
-    Task<TResult> Read(TQuery query);
+    Task<TResult> Read(TQuery query, CancellationToken cancellationToken = default);
 }

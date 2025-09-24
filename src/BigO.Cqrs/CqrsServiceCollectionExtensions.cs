@@ -48,7 +48,7 @@ public static class CqrsServiceCollectionExtensions
     /// <param name="serviceCollection">The <see cref="IServiceCollection" /> to add the service to.</param>
     /// <param name="serviceLifetime">
     ///     The <see cref="ServiceLifetime" /> of the command bus service.
-    ///     If not specified, the default value is <see cref="ServiceLifetime.Singleton" />.
+    ///     If not specified, the default value is <see cref="ServiceLifetime.Scoped" />.
     /// </param>
     /// <returns>The <paramref name="serviceCollection" /> with the command bus service added.</returns>
     /// <remarks>
@@ -58,7 +58,7 @@ public static class CqrsServiceCollectionExtensions
     ///     created when it is first requested, and will be disposed of according to the specified lifetime.
     /// </remarks>
     public static IServiceCollection RegisterDefaultCommandBus(this IServiceCollection serviceCollection,
-        ServiceLifetime serviceLifetime = ServiceLifetime.Singleton)
+        ServiceLifetime serviceLifetime = ServiceLifetime.Scoped)
     {
         return serviceLifetime switch
         {
@@ -109,7 +109,7 @@ public static class CqrsServiceCollectionExtensions
     /// <param name="serviceCollection">The <see cref="IServiceCollection" /> to add the service to.</param>
     /// <param name="serviceLifetime">
     ///     The <see cref="ServiceLifetime" /> of the query processor service.
-    ///     If not specified, the default value is <see cref="ServiceLifetime.Singleton" />.
+    ///     If not specified, the default value is <see cref="ServiceLifetime.Scoped" />.
     /// </param>
     /// <returns>The <paramref name="serviceCollection" /> with the query processor service added.</returns>
     /// <remarks>
@@ -120,7 +120,7 @@ public static class CqrsServiceCollectionExtensions
     ///     lifetime.
     /// </remarks>
     public static IServiceCollection RegisterDefaultQueryProcessor(this IServiceCollection serviceCollection,
-        ServiceLifetime serviceLifetime = ServiceLifetime.Singleton)
+        ServiceLifetime serviceLifetime = ServiceLifetime.Scoped)
     {
         return serviceLifetime switch
         {
@@ -183,6 +183,13 @@ public static class CqrsServiceCollectionExtensions
         return serviceCollection;
     }
 
+    /// <summary>
+    /// Decorates all command handlers with the specified decorator type.
+    /// </summary>
+    /// <param name="serviceCollection">The service collection to chain the decoration to.</param>
+    /// <param name="commandDecoratorType">The type of the command decorator to use.</param>
+    /// <returns>The service collection with the command handlers decorated.</returns>
+    /// <exception cref="ArgumentException">Thrown if the decorator type does not implement ICommandDecorator&lt;TCommand&gt;.</exception>
     public static IServiceCollection DecorateAllCommandHandlers(IServiceCollection serviceCollection,
         Type commandDecoratorType)
     {
@@ -196,6 +203,13 @@ public static class CqrsServiceCollectionExtensions
         return serviceCollection;
     }
 
+    /// <summary>
+    ///   Decorates all query handlers with the specified decorator type.
+    /// </summary>
+    /// <param name="serviceCollection">The service collection to chain the decoration to.</param>
+    /// <param name="queryDecoratorType">The type of the query decorator to use.</param>
+    /// <returns>The service collection with the query handlers decorated.</returns>
+    /// <exception cref="ArgumentException">Thrown if the decorator type does not implement IQueryDecorator&lt;TQuery, TResult&gt;.</exception>
     public static IServiceCollection DecorateAllQueryHandlers(IServiceCollection serviceCollection,
         Type queryDecoratorType)
     {

@@ -19,7 +19,7 @@ public abstract class TransactionCommandDecoratorBase<TCommand>(ICommandHandler<
     /// <summary>
     ///     Gets or sets the transaction options.
     /// </summary>
-    public TransactionOptions TransactionOptions { get; protected set; } = new()
+    public TransactionOptions TransactionOptions { get; protected init; } = new()
     {
         IsolationLevel = IsolationLevel.ReadCommitted,
         Timeout = TimeSpan.FromMinutes(1)
@@ -28,23 +28,24 @@ public abstract class TransactionCommandDecoratorBase<TCommand>(ICommandHandler<
     /// <summary>
     ///     Gets or sets the transaction scope option.
     /// </summary>
-    public TransactionScopeOption TransactionScopeOption { get; protected set; } = TransactionScopeOption.Required;
+    public TransactionScopeOption TransactionScopeOption { get; protected init; } = TransactionScopeOption.Required;
 
     /// <summary>
     ///     Gets or sets the transaction scope async flow option.
     /// </summary>
-    public TransactionScopeAsyncFlowOption TransactionScopeAsyncFlowOption { get; protected set; } =
+    public TransactionScopeAsyncFlowOption TransactionScopeAsyncFlowOption { get; protected init; } =
         TransactionScopeAsyncFlowOption.Enabled;
 
     /// <summary>
     ///     Handles the specified command within a transaction scope.
     /// </summary>
     /// <param name="command">The command to be handled.</param>
-    public async Task Handle(TCommand command)
+    /// <param name="cancellationToken">The cancellation token.</param>
+    public async Task Handle(TCommand command, CancellationToken cancellationToken = default)
     {
         using var scope =
             new TransactionScope(TransactionScopeOption, TransactionOptions, TransactionScopeAsyncFlowOption);
-        await Decorated.Handle(command);
+        await Decorated.Handle(command, cancellationToken);
         scope.Complete();
     }
 }

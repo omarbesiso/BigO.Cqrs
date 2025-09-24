@@ -2,6 +2,9 @@
 
 namespace BigO.Cqrs.Logging;
 
+/// <summary>
+///     Provides extension methods for decorating CQRS command and query handlers with logging capabilities.
+/// </summary>
 public static class LoggingExtensions
 {
     /// <summary>

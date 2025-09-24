@@ -3,7 +3,7 @@
 /// <summary>
 ///     Defines a contract for handling command as specified in the CQRS pattern.
 /// </summary>
-/// <typeparam name="TCommand">The type of command to handle. Must be a reference type.</typeparam>
+/// <typeparam name="TCommand">The type of command to handle, which must implement <see cref="ICommand" />.</typeparam>
 /// <remarks>
 ///     The <see cref="ICommandHandler{TCommand}" /> interface defines a contract for handling a command of type
 ///     <typeparamref name="TCommand" />.
@@ -20,8 +20,9 @@
 public interface ICommandHandler<in TCommand> where TCommand : ICommand
 {
     /// <summary>
-    ///     Routes the specified command to the relevant command handler.
+    ///     Handles the specified command.
     /// </summary>
     /// <param name="command">The command to be handled.</param>
-    Task Handle(TCommand command);
+    /// <param name="cancellationToken">The cancellation token.</param>
+    Task Handle(TCommand command, CancellationToken cancellationToken = default);
 }
