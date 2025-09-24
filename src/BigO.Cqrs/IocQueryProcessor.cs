@@ -9,7 +9,8 @@ namespace BigO.Cqrs;
 internal class IocQueryProcessor(IServiceProvider serviceProvider) : IQueryProcessor
 {
     /// <inheritdoc />
-    public async Task<TResult> ProcessQuery<TQuery, TResult>(TQuery query, CancellationToken cancellationToken = default) where TQuery : IQuery
+    public async Task<TResult> ProcessQuery<TQuery, TResult>(TQuery query,
+        CancellationToken cancellationToken = default) where TQuery : IQuery
     {
         Guard.NotNull(query);
         var queryHandler = serviceProvider.GetRequiredService<IQueryHandler<TQuery, TResult>>();

@@ -1,4 +1,5 @@
 ﻿using System.Transactions;
+using BigO.Validation;
 
 namespace BigO.Cqrs.Transactions;
 
@@ -43,6 +44,8 @@ public abstract class TransactionCommandDecoratorBase<TCommand>(ICommandHandler<
     /// <param name="cancellationToken">The cancellation token.</param>
     public async Task Handle(TCommand command, CancellationToken cancellationToken = default)
     {
+        Guard.NotNull(command);
+
         using var scope =
             new TransactionScope(TransactionScopeOption, TransactionOptions, TransactionScopeAsyncFlowOption);
         await Decorated.Handle(command, cancellationToken);

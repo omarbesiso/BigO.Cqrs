@@ -13,7 +13,7 @@ internal static partial class CqrsLog
 
     [LoggerMessage(
         EventId = 1001, // Ensure EventIds are unique within your logging scope
-        Level = LogLevel.Information,
+        Level = LogLevel.Debug,
         Message = "Start reading query '{QueryName}'")]
     internal static partial void StartReadingQuery(ILogger logger, string queryName);
 
@@ -25,7 +25,7 @@ internal static partial class CqrsLog
 
     [LoggerMessage(
         EventId = 1003,
-        Level = LogLevel.Information,
+        Level = LogLevel.Debug,
         Message = "Executed query '{QueryName}' in {ElapsedTime}.")]
     internal static partial void ExecutedQuery(ILogger logger, string queryName, TimeSpan elapsedTime);
 
@@ -33,7 +33,7 @@ internal static partial class CqrsLog
 
     [LoggerMessage(
         EventId = 2001,
-        Level = LogLevel.Information,
+        Level = LogLevel.Debug,
         Message = "Start executing command '{CommandName}'")]
     internal static partial void StartExecutingCommand(ILogger logger, string commandName);
 
@@ -45,7 +45,7 @@ internal static partial class CqrsLog
 
     [LoggerMessage(
         EventId = 2003,
-        Level = LogLevel.Information,
+        Level = LogLevel.Debug,
         Message = "Executed command '{CommandName}' in {ElapsedTime}.")]
     internal static partial void ExecutedCommand(ILogger logger, string commandName, TimeSpan elapsedTime);
 }

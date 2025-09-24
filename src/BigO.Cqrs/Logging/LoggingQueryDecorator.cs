@@ -1,12 +1,6 @@
-﻿// Filename: LoggingQueryDecorator.cs
-
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using BigO.Validation;
 using Microsoft.Extensions.Logging;
-
-// Required for Exception
-
-// Assuming your CQRS interfaces (IQuery, IQueryHandler, IQueryDecorator) are accessible
-// e.g., using BigO.Cqrs;
 
 namespace BigO.Cqrs.Logging;
 
@@ -42,28 +36,29 @@ public sealed class LoggingQueryDecorator<TQuery, TResult> : IQueryDecorator<TQu
     /// </summary>
     /// <param name="query">The query.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>TResult.</returns>
+    /// <returns>The result of the query.</returns>
     public async Task<TResult> Read(TQuery query, CancellationToken cancellationToken = default)
     {
+        Guard.NotNull(query);
+
         var queryName = query.GetType().Name;
-        CqrsLog.StartReadingQuery(_logger, queryName); // MODIFIED: Using source-generated logger
+        CqrsLog.StartReadingQuery(_logger, queryName);
 
         var startTime = Stopwatch.GetTimestamp();
         try
         {
-            // MODIFIED: Added ConfigureAwait(false)
-            var result = await _decorated.Read(query, cancellationToken).ConfigureAwait(false);
+            var result = await _decorated.Read(query, cancellationToken);
             return result;
         }
         catch (Exception ex)
         {
-            CqrsLog.ErrorReadingQuery(_logger, queryName, ex); // MODIFIED: Using source-generated logger
+            CqrsLog.ErrorReadingQuery(_logger, queryName, ex);
             throw;
         }
         finally
         {
             var elapsedTime = Stopwatch.GetElapsedTime(startTime);
-            CqrsLog.ExecutedQuery(_logger, queryName, elapsedTime); // MODIFIED: Using source-generated logger
+            CqrsLog.ExecutedQuery(_logger, queryName, elapsedTime);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using BigO.Validation;
 using Microsoft.Extensions.Logging;
 
 namespace BigO.Cqrs.Logging;
@@ -37,24 +38,25 @@ public sealed class LoggingCommandDecorator<TCommand> : ICommandDecorator<TComma
     /// <param name="cancellationToken">The cancellation token.</param>
     public async Task Handle(TCommand command, CancellationToken cancellationToken = default)
     {
+        Guard.NotNull(command);
+
         var commandName = command.GetType().Name;
-        CqrsLog.StartExecutingCommand(_logger, commandName); // MODIFIED: Using source-generated logger
+        CqrsLog.StartExecutingCommand(_logger, commandName);
 
         var startTime = Stopwatch.GetTimestamp();
         try
         {
-            // MODIFIED: Added ConfigureAwait(false)
-            await _decorated.Handle(command, cancellationToken).ConfigureAwait(false);
+            await _decorated.Handle(command, cancellationToken);
         }
         catch (Exception ex)
         {
-            CqrsLog.ErrorExecutingCommand(_logger, commandName, ex); // MODIFIED: Using source-generated logger
+            CqrsLog.ErrorExecutingCommand(_logger, commandName, ex);
             throw;
         }
         finally
         {
             var elapsedTime = Stopwatch.GetElapsedTime(startTime);
-            CqrsLog.ExecutedCommand(_logger, commandName, elapsedTime); // MODIFIED: Using source-generated logger
+            CqrsLog.ExecutedCommand(_logger, commandName, elapsedTime);
         }
     }
 }

@@ -184,7 +184,7 @@ public static class CqrsServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Decorates all command handlers with the specified decorator type.
+    ///     Decorates all command handlers with the specified decorator type.
     /// </summary>
     /// <param name="serviceCollection">The service collection to chain the decoration to.</param>
     /// <param name="commandDecoratorType">The type of the command decorator to use.</param>
@@ -204,12 +204,15 @@ public static class CqrsServiceCollectionExtensions
     }
 
     /// <summary>
-    ///   Decorates all query handlers with the specified decorator type.
+    ///     Decorates all query handlers with the specified decorator type.
     /// </summary>
     /// <param name="serviceCollection">The service collection to chain the decoration to.</param>
     /// <param name="queryDecoratorType">The type of the query decorator to use.</param>
     /// <returns>The service collection with the query handlers decorated.</returns>
-    /// <exception cref="ArgumentException">Thrown if the decorator type does not implement IQueryDecorator&lt;TQuery, TResult&gt;.</exception>
+    /// <exception cref="ArgumentException">
+    ///     Thrown if the decorator type does not implement IQueryDecorator&lt;TQuery, TResult
+    ///     &gt;.
+    /// </exception>
     public static IServiceCollection DecorateAllQueryHandlers(IServiceCollection serviceCollection,
         Type queryDecoratorType)
     {
