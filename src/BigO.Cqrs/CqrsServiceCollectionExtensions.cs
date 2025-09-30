@@ -48,7 +48,7 @@ public static class CqrsServiceCollectionExtensions
     /// <param name="serviceCollection">The <see cref="IServiceCollection" /> to add the service to.</param>
     /// <param name="serviceLifetime">
     ///     The <see cref="ServiceLifetime" /> of the command bus service.
-    ///     If not specified, the default value is <see cref="ServiceLifetime.Scoped" />.
+    ///     If not specified, the default value is <see cref="ServiceLifetime.Singleton" />.
     /// </param>
     /// <returns>The <paramref name="serviceCollection" /> with the command bus service added.</returns>
     /// <remarks>
@@ -58,7 +58,7 @@ public static class CqrsServiceCollectionExtensions
     ///     created when it is first requested, and will be disposed of according to the specified lifetime.
     /// </remarks>
     public static IServiceCollection RegisterDefaultCommandBus(this IServiceCollection serviceCollection,
-        ServiceLifetime serviceLifetime = ServiceLifetime.Scoped)
+        ServiceLifetime serviceLifetime = ServiceLifetime.Singleton)
     {
         return serviceLifetime switch
         {
@@ -109,7 +109,7 @@ public static class CqrsServiceCollectionExtensions
     /// <param name="serviceCollection">The <see cref="IServiceCollection" /> to add the service to.</param>
     /// <param name="serviceLifetime">
     ///     The <see cref="ServiceLifetime" /> of the query processor service.
-    ///     If not specified, the default value is <see cref="ServiceLifetime.Scoped" />.
+    ///     If not specified, the default value is <see cref="ServiceLifetime.Singleton" />.
     /// </param>
     /// <returns>The <paramref name="serviceCollection" /> with the query processor service added.</returns>
     /// <remarks>
@@ -120,7 +120,7 @@ public static class CqrsServiceCollectionExtensions
     ///     lifetime.
     /// </remarks>
     public static IServiceCollection RegisterDefaultQueryProcessor(this IServiceCollection serviceCollection,
-        ServiceLifetime serviceLifetime = ServiceLifetime.Scoped)
+        ServiceLifetime serviceLifetime = ServiceLifetime.Singleton)
     {
         return serviceLifetime switch
         {
@@ -184,12 +184,23 @@ public static class CqrsServiceCollectionExtensions
     }
 
     /// <summary>
-    ///     Decorates all command handlers with the specified decorator type.
+    ///     Decorates all registered command handlers with the specified decorator type.
     /// </summary>
-    /// <param name="serviceCollection">The service collection to chain the decoration to.</param>
-    /// <param name="commandDecoratorType">The type of the command decorator to use.</param>
-    /// <returns>The service collection with the command handlers decorated.</returns>
-    /// <exception cref="ArgumentException">Thrown if the decorator type does not implement ICommandDecorator&lt;TCommand&gt;.</exception>
+    /// <param name="serviceCollection">The <see cref="IServiceCollection" /> to which the decorator should be applied.</param>
+    /// <param name="commandDecoratorType">
+    ///     The type of the decorator that implements <see cref="ICommandDecorator{TCommand}" />.
+    /// </param>
+    /// <returns>The <paramref name="serviceCollection" /> with all command handlers decorated.</returns>
+    /// <exception cref="ArgumentException">
+    ///     Thrown when <paramref name="commandDecoratorType" /> does not implement
+    ///     <see cref="ICommandDecorator{TCommand}" />.
+    /// </exception>
+    /// <remarks>
+    ///     This method decorates all currently registered command handlers of type
+    ///     <see cref="ICommandHandler{TCommand}" /> with the specified <paramref name="commandDecoratorType" />.
+    ///     The decorator type must implement <see cref="ICommandDecorator{TCommand}" />, otherwise
+    ///     an <see cref="ArgumentException" /> is thrown.
+    /// </remarks>
     public static IServiceCollection DecorateAllCommandHandlers(IServiceCollection serviceCollection,
         Type commandDecoratorType)
     {
@@ -204,15 +215,23 @@ public static class CqrsServiceCollectionExtensions
     }
 
     /// <summary>
-    ///     Decorates all query handlers with the specified decorator type.
+    ///     Decorates all registered query handlers with the specified decorator type.
     /// </summary>
-    /// <param name="serviceCollection">The service collection to chain the decoration to.</param>
-    /// <param name="queryDecoratorType">The type of the query decorator to use.</param>
-    /// <returns>The service collection with the query handlers decorated.</returns>
+    /// <param name="serviceCollection">The <see cref="IServiceCollection" /> to which the decorator should be applied.</param>
+    /// <param name="queryDecoratorType">
+    ///     The type of the decorator that implements <see cref="IQueryDecorator{TQuery, TResult}" />.
+    /// </param>
+    /// <returns>The <paramref name="serviceCollection" /> with all query handlers decorated.</returns>
     /// <exception cref="ArgumentException">
-    ///     Thrown if the decorator type does not implement IQueryDecorator&lt;TQuery, TResult
-    ///     &gt;.
+    ///     Thrown when <paramref name="queryDecoratorType" /> does not implement
+    ///     <see cref="IQueryDecorator{TQuery, TResult}" />.
     /// </exception>
+    /// <remarks>
+    ///     This method decorates all currently registered query handlers of type
+    ///     <see cref="IQueryHandler{TQuery, TResult}" /> with the specified <paramref name="queryDecoratorType" />.
+    ///     The decorator type must implement <see cref="IQueryDecorator{TQuery, TResult}" />, otherwise
+    ///     an <see cref="ArgumentException" /> is thrown.
+    /// </remarks>
     public static IServiceCollection DecorateAllQueryHandlers(IServiceCollection serviceCollection,
         Type queryDecoratorType)
     {
@@ -230,7 +249,7 @@ public static class CqrsServiceCollectionExtensions
         Type type, IEnumerable<Type>? excludedTypes = null)
         where TModule : IModule
     {
-        var excludedTypesList = excludedTypes != null ? excludedTypes.ToList() : new List<Type>();
+        var excludedTypesList = excludedTypes != null ? excludedTypes.ToList() : [];
 
         switch (serviceLifetime)
         {
@@ -239,7 +258,7 @@ public static class CqrsServiceCollectionExtensions
                     scan.FromAssemblyOf<TModule>()
                         .AddClasses(classes =>
                             classes.AssignableTo(type)
-                                .Where(t => !excludedTypesList.Any(t.IsBasedOn) && t.IsBasedOn(type)))
+                                .Where(t => !excludedTypesList.Any(t.IsBasedOn) && t.IsBasedOn(type)), false)
                         .AsImplementedInterfaces()
                         .WithScopedLifetime());
                 break;
@@ -248,7 +267,7 @@ public static class CqrsServiceCollectionExtensions
                     scan.FromAssemblyOf<TModule>()
                         .AddClasses(classes =>
                             classes.AssignableTo(type)
-                                .Where(t => !excludedTypesList.Any(t.IsBasedOn) && t.IsBasedOn(type)))
+                                .Where(t => !excludedTypesList.Any(t.IsBasedOn) && t.IsBasedOn(type)), false)
                         .AsImplementedInterfaces()
                         .WithTransientLifetime());
                 break;
@@ -257,7 +276,7 @@ public static class CqrsServiceCollectionExtensions
                     scan.FromAssemblyOf<TModule>()
                         .AddClasses(classes =>
                             classes.AssignableTo(type)
-                                .Where(t => !excludedTypesList.Any(t.IsBasedOn) && t.IsBasedOn(type)))
+                                .Where(t => !excludedTypesList.Any(t.IsBasedOn) && t.IsBasedOn(type)), false)
                         .AsImplementedInterfaces()
                         .WithSingletonLifetime());
                 break;

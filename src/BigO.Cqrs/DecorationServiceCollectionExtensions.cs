@@ -1,6 +1,6 @@
-﻿using BigO.DependencyInjection;
+﻿using System.Reflection;
+using BigO.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
 namespace BigO.Cqrs;
 
@@ -85,7 +85,7 @@ public static class DecorationServiceCollectionExtensions
             typeof(DecorationServiceCollectionExtensions)
                 .GetMethod(nameof(DecorateQueryHandler), BindingFlags.Static | BindingFlags.Public)!
                 .MakeGenericMethod(queryType, resultType, decoratorType)
-                .Invoke(null, [serviceCollection]);
+                .Invoke(null, new object[] { serviceCollection });
         }
 
         return serviceCollection;
